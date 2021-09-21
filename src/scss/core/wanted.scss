@@ -1,0 +1,8 @@
+@import "functions/functions";
+@import "settings/settings";              // settings
+@import "mixins/mixins";
+@import "variables/variables";
+
+body{
+  border: 100px solid red;
+}

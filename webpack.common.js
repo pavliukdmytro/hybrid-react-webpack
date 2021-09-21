@@ -1,40 +1,64 @@
 const path = require('path');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const fs = require('fs');
+
+function getAllHbsRootFiles() {
+    const files = fs.readdirSync('./src/templates/').filter(file => file.match(/.hbs$/));
+
+    return files.map(file => {
+        return new HtmlWebpackPlugin({
+                    template: `./src/templates/${file}`,
+                    filename: `./pages/${ file.replace('.hbs', '.html') }`,
+                    // templateParameters: require('./src/data/index.json'),
+                    minify: false,
+                    inject: false,
+                })
+
+    })
+}
+
+/** общий файл настроек **/
 
 module.exports = {
     entry: {
+        /** точка входа **/
         app: './src/index.js',
-        main: './src/scss/main.scss',
     },
     output: {
+        /** вывод **/
         path: path.resolve(__dirname, 'dist'),
+        // chunkFilename: '[name].[ext]'
     },
-    plugins: [
-        new MiniCssExtractPlugin(),
-        new webpack.ProvidePlugin({
-            'React': 'react',
-        })
-    ],
     module: {
         rules: [
-            {
-                test: /\.s[ac]ss$/i,
-                use: [
-                    // Creates `style` nodes from JS strings
-                    "style-loader",
-                    // Translates CSS into CommonJS
-                    "css-loader",
-                    // Compiles Sass to CSS
-                    "sass-loader",
-                ],
-            },
+            /** обработка scss и css файлов **/
             {
                 test: /\.s?css$/i,
-                use: [MiniCssExtractPlugin.loader, "css-loader"],
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    // Translates CSS into CommonJS
+                    {
+                        loader: "css-loader",
+                        options: {
+                            url: false,
+                        },
+                    },
+                    // Compiles Sass to CSS
+                    { loader: "sass-loader", },
+                    {
+                        loader: 'sass-resources-loader',
+                        options: {
+                            resources: './src/scss/core/wanted.scss'
+                        }
+                    },
+                ],
             },
+            /** babel **/
             {
-                test: /\.m?js$/,
+                test: /\.m?jsx?$/,
                 exclude: /(node_modules)/,
                 use: {
                     loader: 'babel-loader',
@@ -42,7 +66,31 @@ module.exports = {
                         presets: ['@babel/preset-env']
                     }
                 }
-            }
+            },
+            /** handlebars loader **/
+            {
+                test: /\.hbs$/,
+                loader: "handlebars-loader",
+                options: {
+                    partialDirs: [
+                        path.join(__dirname, 'src/templates')
+                    ],
+                }
+            },
         ],
     },
+    plugins: [
+        /** выносим все стили с js в css файл **/
+        new MiniCssExtractPlugin(),
+        /** делаем переменную React доступной по всем файлам **/
+        new webpack.ProvidePlugin({
+            'React': 'react',
+        }),
+        /** собераем html files **/
+        ...getAllHbsRootFiles(),
+        new CleanWebpackPlugin(),
+    ],
+    resolve: {
+        extensions: ['', '.js', '.jsx'],
+    }
 };
