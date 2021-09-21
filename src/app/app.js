@@ -8,6 +8,8 @@ async function createComponent(el) {
     const Component = (await rootComponents[el.dataset.react]()).default;
     const prop = el?.dataset?.result;
 
+    console.log(Component);
+
     if (!prop) {
         ReactDOM.render(<Component />, el);
     } else {
@@ -26,7 +28,7 @@ const observer = new IntersectionObserver(function (entries) {
     if (entry.isIntersecting) {
       const { target } = entry;
       observer.unobserve(target);
-        console.log(target);
+        // console.log(target);
       createComponent(target);
     }
   });

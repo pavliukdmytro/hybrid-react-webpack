@@ -1,5 +1,5 @@
 const rootComponents = {
-    Header: () => require('./components/Header/Header').default,
+    Header: () => require('./components/Header/Header'),
     Footer: () => import(/* webpackChunkName: "Footer" */ './components/Footer/Footer'),
 };
 
