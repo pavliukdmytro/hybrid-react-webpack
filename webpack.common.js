@@ -11,7 +11,7 @@ function getAllHbsRootFiles() {
     return files.map(file => {
         return new HtmlWebpackPlugin({
                     template: `./src/templates/${file}`,
-                    filename: `./pages/${ file.replace('.hbs', '.html') }`,
+                    filename: `./${ file.replace('.hbs', '.html') }`,
                     // templateParameters: require('./src/data/index.json'),
                     minify: false,
                     inject: false,
@@ -88,7 +88,7 @@ module.exports = {
         }),
         /** собераем html files **/
         ...getAllHbsRootFiles(),
-        new CleanWebpackPlugin(),
+        // new CleanWebpackPlugin(),
     ],
     resolve: {
         extensions: ['', '.js', '.jsx'],

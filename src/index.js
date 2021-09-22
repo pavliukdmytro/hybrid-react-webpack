@@ -1,4 +1,4 @@
-__webpack_public_path__ = '/dist/';
+// __webpack_public_path__ = '/dist/';
 
 import './scss/main.scss';
 
