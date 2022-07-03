@@ -6,11 +6,11 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const fs = require('fs');
 
 function getAllHbsRootFiles() {
-    const files = fs.readdirSync('./src/templates/').filter(file => file.match(/.hbs$/));
+    const files = fs.readdirSync('./src/views/').filter(file => file.match(/.hbs$/));
 
     return files.map(file => {
         return new HtmlWebpackPlugin({
-                    template: `./src/templates/${file}`,
+                    template: `./src/views/${file}`,
                     filename: `./${ file.replace('.hbs', '.html') }`,
                     // templateParameters: require('./src/data/index.json'),
                     minify: false,
@@ -25,7 +25,7 @@ function getAllHbsRootFiles() {
 module.exports = {
     entry: {
         /** точка входа **/
-        app: './src/index.js',
+        app: './src/index.ts',
     },
     output: {
         /** вывод **/
@@ -58,6 +58,11 @@ module.exports = {
             },
             /** babel **/
             {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
+            {
                 test: /\.m?jsx?$/,
                 exclude: /(node_modules)/,
                 use: {
@@ -73,7 +78,7 @@ module.exports = {
                 loader: "handlebars-loader",
                 options: {
                     partialDirs: [
-                        path.join(__dirname, 'src/templates')
+                        path.join(__dirname, 'src/views')
                     ],
                 }
             },
@@ -91,6 +96,6 @@ module.exports = {
         // new CleanWebpackPlugin(),
     ],
     resolve: {
-        extensions: ['', '.js', '.jsx'],
+        extensions: ['.tsx', '.ts', '.js', '.jsx'],
     }
 };
