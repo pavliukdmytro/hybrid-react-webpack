@@ -2,4 +2,4 @@
 
 import './scss/main.scss';
 
-require('./app/app');
+import './app/app';

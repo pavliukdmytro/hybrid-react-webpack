@@ -1,6 +1,6 @@
 import './header.scss';
 
-function Header() {
+function Header(props: { test: { name: string } }) {
     return (
         <div className="header">Header!!</div>
     )

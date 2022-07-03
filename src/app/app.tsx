@@ -5,14 +5,23 @@ const rootComponents = require('./root-components').default;
 const roots = document.querySelectorAll('[data-react]');
 
 async function createComponent(el: any) {
-    const Component = (await rootComponents[el.dataset.react]()).default;
-    const prop = el?.dataset?.result;
+  const Component = (await rootComponents[el.dataset.react]()).default;
+  const props = { ...el?.dataset };
 
-    if (!prop) {
-        render(<Component />, el);
-    } else {
-        render(<Component result={prop && JSON.parse(prop)} />, el);
+  Object.keys(el?.dataset).forEach((key: any) => {
+    if (key === 'react') {
+      delete props[key];
+      return;
     }
+    props[key] = JSON.parse(props[key]);
+  });
+
+
+  if (!props) {
+      render(<Component />, el);
+  } else {
+      render(<Component { ...props } />, el);
+  }
 }
 
 const options = {
@@ -33,6 +42,5 @@ const observer = new IntersectionObserver(function (entries) {
 }, options);
 
 roots.forEach((el) => {
-    // createComponent(el);
     observer.observe(el);
 });
