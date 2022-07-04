@@ -1,4 +1,4 @@
-import './header.scss';
+import './Header.scss';
 
 function Header(props: { test: { name: string } }) {
     return (
